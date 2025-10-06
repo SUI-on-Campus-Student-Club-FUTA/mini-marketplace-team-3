@@ -1,0 +1,15 @@
+[package]
+name = "mini-marketplace"
+edition = "2024.beta"
+license = "MIT"
+#authors = [""]
+
+[dependencies]
+
+[addresses]
+mini-marketplace = "0x0"
+
+[dev-dependencies]
+
+[dev-addresses]
+
