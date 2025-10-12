@@ -1,24 +1,16 @@
-module {{YOUR_ADDRESS}}::item {
+module sui_mini_marketplace::item {
+    use sui::object;
+    use sui::tx_context;
+    use sui::transfer;
 
-    use std::string;
-    use sui::object::{Self, UID};
-    use sui::tx_context::TxContext;
-
-    /// Represents a marketplace item.
-    public struct Item has key, store {
-        id: UID,
+    struct Item has key, store {
+        id: object::UID,
         name: string::String,
         price: u64,
         owner: address,
     }
 
-    /// Create a new item.
-    public fun new_item(
-        name: string::String,
-        price: u64,
-        owner: address,
-        ctx: &mut TxContext
-    ): Item {
+    public fun new(name: string::String, price: u64, owner: address, ctx: &mut tx_context::TxContext): Item {
         Item {
             id: object::new(ctx),
             name,
@@ -27,18 +19,24 @@ module {{YOUR_ADDRESS}}::item {
         }
     }
 
-    /// Return the item's owner.
-    public fun owner(item: &Item): address {
+    public fun get_id(item: &Item): object::ID {
+        object::uid_to_id(&item.id)
+    }
+
+    public fun get_owner(item: &Item): address {
         item.owner
     }
 
-    /// Return the item's price.
-    public fun price(item: &Item): u64 {
+    public fun get_price(item: &Item): u64 {
         item.price
     }
 
-    /// Transfer ownership to a new owner.
     public fun transfer_ownership(item: &mut Item, new_owner: address) {
         item.owner = new_owner;
+    }
+
+    public fun delete(item: Item) {
+        let Item { id, name: _, price: _, owner: _ } = item;
+        id.delete();
     }
 }
